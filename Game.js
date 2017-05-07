@@ -2,6 +2,7 @@ Tronera.Game = function (game) {
     this.card;
     this.tweet;
     this.activeZone;
+    this.draggedAt;
 };
 
 Tronera.Game.prototype = {
@@ -14,8 +15,34 @@ Tronera.Game.prototype = {
     },
 
     update: function () {
+        this.shrinkWithDistance();
         this.positionText();
         this.physics.arcade.overlap(this.card, this.activeZone, this.collision, null, this);
+    },
+
+    shrinkWithDistance: function(){
+        factor=this.computeFactor();
+        this.card.scale.setTo(factor,factor);
+        this.tweet.fontSize = 12 * factor;
+    },
+
+    computeFactor: function(){
+        factor=Math.max(this.xShrink(),this.yShrink());
+        return (100 - factor)/100;
+    },
+
+    xShrink: function () {
+        var halfWidth= (this.world.width / 2);
+        var pathLength = Math.abs(this.centerOfCard().x - this.centerOfWorld().x);
+        var factor = Math.floor((pathLength / halfWidth) * 100);
+        return  factor;
+    },
+
+    yShrink: function () {
+        var halfHeight= (this.world.height / 2);
+        var pathLength = Math.abs(this.centerOfCard().y - this.centerOfWorld().y);
+        var factor = Math.floor((pathLength / halfHeight) * 100);
+        return  factor;
     },
 
     collision: function() {
@@ -43,15 +70,27 @@ Tronera.Game.prototype = {
         card.input.enableDrag();
         this.physics.arcade.enable(card);
         card.anchor.setTo(0.5, 0.5);
+        card.events.onDragStart.add(this.registerTime,this);
         card.events.onDragStop.add(this.startMovement,this);
         card.body.collideWorldBounds = true;
         this.card = card;
     },
 
+    registerTime: function(){
+        this.draggedAt = this.time.time;
+    },
+
     startMovement: function(){
+        var elapsed = this.time.elapsedSince(this.draggedAt);
         var vector= this.card.input.dragStartPoint.subtract(this.card.x,this.card.y);
-        this.card.body.velocity.x = vector.x * -1;
-        this.card.body.velocity.y = vector.y * -1;
+        this.card.body.velocity.x = this.computeVelocity(vector.x , elapsed);
+        this.card.body.velocity.y = this.computeVelocity(vector.y , elapsed);
+    },
+
+    computeVelocity:function(dimension,elapsed){
+        var inPixelsPerMillis= (dimension / elapsed);
+        var inPixelsPerSecond= inPixelsPerMillis * 1000;
+        return inPixelsPerSecond * Tronera.INVERSION_FACTOR;
     },
 
     createTweet: function(){
@@ -76,6 +115,13 @@ Tronera.Game.prototype = {
         return {
             x: this.card.centerX,
             y: this.card.centerY
+        }
+    },
+
+    centerOfWorld: function(){
+        return {
+            x: this.world.centerX,
+            y: this.world.centerY
         }
     },
 
