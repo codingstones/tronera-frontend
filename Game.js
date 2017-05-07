@@ -47,6 +47,18 @@ Tronera.Game.prototype = {
 
     collision: function() {
         console.log("COLLISION!");
+        this.replaceCenteredCard();
+        this.replaceTweet();
+    },
+
+    replaceCenteredCard() {
+        this.card.kill();
+        this.createCenteredCard();
+    },
+
+    replaceTweet() {
+        this.tweet.kill();
+        this.createTweet();
     },
 
     makeCard: function (){
