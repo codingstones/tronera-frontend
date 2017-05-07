@@ -23,6 +23,7 @@ Tronera.Game.prototype = {
     shrinkWithDistance: function(){
         factor=this.computeFactor();
         this.card.scale.setTo(factor,factor);
+        this.card.setScaleMinMax(.3, .3, null, null);
         this.tweet.fontSize = 12 * factor;
     },
 
