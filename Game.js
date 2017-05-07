@@ -1,7 +1,7 @@
 Tronera.Game = function (game) {
     this.card;
     this.tweet;
-    this.item;
+    this.activeZone;
 };
 
 Tronera.Game.prototype = {
@@ -10,6 +10,7 @@ Tronera.Game.prototype = {
         this.setBackground();
         this.createCenteredCard();
         this.createTweet();
+        this.createActiveZone();
     },
 
     update: function () {
@@ -20,7 +21,7 @@ Tronera.Game.prototype = {
         var width = 400;
         var height = 200
         var graphic = this.game.add.bitmapData(width, height);
- 
+
         graphic.ctx.beginPath();
         graphic.ctx.rect(0, 0, width, height);
         graphic.ctx.fillStyle = '#CCCCCC';
@@ -45,7 +46,7 @@ Tronera.Game.prototype = {
     startMovement: function(){
         var vector= this.card.input.dragStartPoint.subtract(this.card.x,this.card.y);
         this.card.body.velocity.x = vector.x * -1;
-        this.card.body.velocity.y = vector.y * -1; 
+        this.card.body.velocity.y = vector.y * -1;
     },
 
     createTweet: function(){
@@ -58,6 +59,11 @@ Tronera.Game.prototype = {
         this.tweet = this.add.text( 0, 0,this.retrieveContent() , style)
         this.tweet.anchor.set(0.5);
         this.positionText();
+    },
+
+    createActiveZone: function(){
+        this.activeZone = this.add.sprite(0, 0, Tronera.Twitter.RETWEET);
+        this.activeZone.scale.setTo(.2, .2);
     },
 
     centerOfCard: function(){

@@ -28,6 +28,7 @@ Tronera.Preloader.prototype = {
 		// this.load.audio('titleMusic', ['audio/main_menu.mp3']);
 		// this.load.bitmapFont('caslon', 'fonts/caslon.png', 'fonts/caslon.xml');
 		//	+ lots of other required assets here
+		this.load.image(Tronera.Twitter.RETWEET, 'images/retweet.png');
 	},
 
 	showLoadBar: function(){
