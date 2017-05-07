@@ -15,6 +15,11 @@ Tronera.Game.prototype = {
 
     update: function () {
         this.positionText();
+        this.physics.arcade.overlap(this.card, this.activeZone, this.collision, null, this);
+    },
+
+    collision: function() {
+        console.log("COLLISION!");
     },
 
     makeCard: function (){
@@ -64,6 +69,7 @@ Tronera.Game.prototype = {
     createActiveZone: function(){
         this.activeZone = this.add.sprite(0, 0, Tronera.Twitter.RETWEET);
         this.activeZone.scale.setTo(.2, .2);
+        this.physics.arcade.enable(this.activeZone);
     },
 
     centerOfCard: function(){
